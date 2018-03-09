@@ -10,6 +10,7 @@ import static org.adoptopenjdk.jitwatch.core.JITWatchConstants.S_HEX_PREFIX;
 
 import org.adoptopenjdk.jitwatch.model.assembly.arm.AssemblyParserARM;
 import org.adoptopenjdk.jitwatch.model.assembly.x86.AssemblyParserX86;
+import org.adoptopenjdk.jitwatch.model.assembly.ppc64le.AssemblyParserPower;
 
 public final class AssemblyUtil
 {
@@ -55,6 +56,9 @@ public final class AssemblyUtil
 			case X86_32:
 			case X86_64:
 				parser = new AssemblyParserX86(architecture);
+				break;
+			case PPC64LE:
+				parser = new AssemblyParserPower(architecture);
 				break;
 			default:
 				break;

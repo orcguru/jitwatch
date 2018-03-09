@@ -11,7 +11,7 @@ import static org.adoptopenjdk.jitwatch.core.JITWatchConstants.S_APOSTROPHE;
 
 public enum Architecture
 {
-	X86_32, X86_64, ARM_32, ARM_64;
+	X86_32, X86_64, ARM_32, ARM_64, PPC64LE;
 
 	private static final String ARCH_X86_32 = "i386";
 	private static final String ARCH_X86_64 = "i386:x86-64";
@@ -19,6 +19,7 @@ public enum Architecture
 
 	private static final String ARCH_ARM_32 = "arm";
 	private static final String ARCH_ARM_64 = "arm-64";
+	private static final String ARCH_PPC64LE = "powerpc:common64";
 
 	public static Architecture parseFromLogLine(String line)
 	{
@@ -37,6 +38,8 @@ public enum Architecture
 				return ARM_32;
 			case ARCH_ARM_64:
 				return ARM_64;
+			case ARCH_PPC64LE:
+				return PPC64LE;
 			}
 		}
 

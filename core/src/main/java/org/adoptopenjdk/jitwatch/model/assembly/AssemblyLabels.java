@@ -17,6 +17,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.adoptopenjdk.jitwatch.util.StringUtil;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  * Calculate symbolic names for method-local addresses.
@@ -37,6 +39,7 @@ public final class AssemblyLabels
 
 	private long lowest = Long.MAX_VALUE;
 	private long highest;
+    //protected static final Logger logger = LoggerFactory.getLogger(AbstractAssemblyParser.class);
 
 	public void newInstruction(AssemblyInstruction instruction)
 	{
@@ -57,7 +60,7 @@ public final class AssemblyLabels
 	{
 		final List<String> operands = instruction.getOperands();
 
-		if (instruction.getMnemonic().startsWith("j") && operands.size() == 1)
+		if ((instruction.getMnemonic().startsWith("j") && operands.size() == 1) || (instruction.getMnemonic().startsWith("b") && operands.size() == 1))
 		{
 			try
 			{
@@ -67,7 +70,12 @@ public final class AssemblyLabels
 			{
 				// could be Intel format jump to Stub:: reference
 			}
-		}
+		} else if (instruction.getMnemonic().startsWith("b") && operands.size() == 2 && operands.get(0).startsWith("cr")) {
+			try {
+				return AssemblyUtil.getValueFromAddress(operands.get(1));
+			} catch (NumberFormatException nfe) {
+			}
+        }
 
 		return null;
 	}
@@ -110,8 +118,16 @@ public final class AssemblyLabels
 
 		if (label != null)
 		{
-			builder.append(C_SPACE);
-			builder.append(String.format("L%04x", label));
+			final List<String> operands = instruction.getOperands();
+            if (operands.size() == 2 && operands.get(0).startsWith("cr")) {
+			    builder.append(C_SPACE);
+			    builder.append(operands.get(0));
+				builder.append(S_COMMA);
+			    builder.append(String.format("L%04x", label));
+            } else {
+			    builder.append(C_SPACE);
+			    builder.append(String.format("L%04x", label));
+            }
 		}
 		else
 		{
